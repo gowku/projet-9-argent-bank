@@ -18,9 +18,34 @@ const row = (bill) => {
     </tr>
     `;
 };
+
+const convertDate = (date) => {
+  const convertMonth = {
+    "Jan.": 0,
+    "Fév.": 1,
+    "Mar.": 2,
+    "Avr.": 3,
+    "Mai.": 4,
+    "Jui.": 5,
+    "Jui.": 6,
+    "Aoû.": 7,
+    "Sep.": 8,
+    "Oct.": 9,
+    "Nov.": 10,
+    "Déc.": 11,
+  };
+  let [day, month, year] = date.split(" ");
+
+  year = parseInt(year);
+  month = convertMonth[month];
+  day = parseInt(day);
+
+  return new Date(year, month, day);
+};
+
 const sortedByDate = (data) => {
   return data.sort(function (a, b) {
-    return new Date(b.date) - new Date(a.date);
+    return convertDate(b.date) - convertDate(a.date);
   });
 };
 
