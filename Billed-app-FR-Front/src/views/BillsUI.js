@@ -41,6 +41,7 @@ const convertDate = (date) => {
   month = convertMonth[month];
   day = parseInt(day);
 
+  // the first condition is for correct the test because date is not in the same format
   if (date.includes("-")) {
     return new Date(date);
   } else {

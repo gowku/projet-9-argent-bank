@@ -68,6 +68,13 @@ export default class {
     this.document = document;
     this.onNavigate = onNavigate;
     this.store = store;
+    console.log(document.getElementsByClassName(".bill-card"));
+    this.openBills = [];
+    // this.arrowIcons = $(".arrow-icon");
+    // console.log(this.arrowIcons);
+    // this.arrowIcons.forEach((arrow, index) => {
+    //   arrow.click((e) => this.handleShowTickets(e, bills, index));
+    // });
     $("#arrow-icon1").click((e) => this.handleShowTickets(e, bills, 1));
     $("#arrow-icon2").click((e) => this.handleShowTickets(e, bills, 2));
     $("#arrow-icon3").click((e) => this.handleShowTickets(e, bills, 3));
@@ -129,7 +136,7 @@ export default class {
     this.onNavigate(ROUTES_PATH["Dashboard"]);
   };
 
-  handleShowTickets(e, bills, index) {
+  handleShowTickets(e, bills, index, openBills) {
     // console.log("handleShowTicket", this.counter);
     // console.log("handleShowTicket-id", this.index);
     if (this.counter === undefined || this.index !== index) this.counter = 0;
@@ -145,8 +152,16 @@ export default class {
     }
 
     bills.forEach((bill) => {
-      // console.log(bill);
+      console.log(this.openBills);
+      console.log($(`#open-bill${bill.id}`).length);
+      // if ($(`#open-bill${bill.id}`).length) {
+      //   this.openBills.push($(`#open-bill${bill.id}`));
+      // }
+      $(`#open-bill${bill.id}`).unbind();
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
+      // this.openBills.forEach((openBill) => {
+      //   openBill.click((e) => this.handleEditTicket(e, bill, bills));
+      // });
     });
 
     return bills;
