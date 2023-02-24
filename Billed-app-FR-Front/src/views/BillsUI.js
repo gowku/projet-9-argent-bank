@@ -20,6 +20,7 @@ const row = (bill) => {
 };
 
 const convertDate = (date) => {
+  console.log(date);
   const convertMonth = {
     "Jan.": 0,
     "Fév.": 1,
@@ -40,7 +41,11 @@ const convertDate = (date) => {
   month = convertMonth[month];
   day = parseInt(day);
 
-  return new Date(year, month, day);
+  if (date.includes("-")) {
+    return new Date(date);
+  } else {
+    return new Date(year, month, day);
+  }
 };
 
 const sortedByDate = (data) => {
@@ -50,7 +55,6 @@ const sortedByDate = (data) => {
 };
 
 const rows = (data) => {
-  console.log(data);
   return data && data.length
     ? sortedByDate(data)
         .map((bill) => row(bill))
