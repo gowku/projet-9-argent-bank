@@ -20,7 +20,6 @@ const row = (bill) => {
 };
 
 const convertDate = (date) => {
-  console.log(date);
   const convertMonth = {
     "Jan.": 0,
     "Fév.": 1,

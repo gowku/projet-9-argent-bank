@@ -27,32 +27,34 @@ export default class NewBill {
     const extension = fileName.split(".");
     let result = extensionsOk.includes(extension[1]);
     if (!result) {
-      alert("vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png");
       btn.setAttribute("disabled", true);
+      $(".fileSelector")
+        .append(`<div class="errorMessage" >vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png</div>`)
+        .css({ color: "red", fontSize: "12px" });
     } else {
       btn.removeAttribute("disabled");
-    }
-    //---------------
-    const formData = new FormData();
-    const email = JSON.parse(localStorage.getItem("user")).email;
-    formData.append("file", file);
-    formData.append("email", email);
+      //---------------
+      const formData = new FormData();
+      const email = JSON.parse(localStorage.getItem("user")).email;
+      formData.append("file", file);
+      formData.append("email", email);
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true,
-        },
-      })
-      .then(({ fileUrl, key }) => {
-        console.log(fileUrl);
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
-      })
-      .catch((error) => console.error(error));
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true,
+          },
+        })
+        .then(({ fileUrl, key }) => {
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
+        })
+        .catch((error) => console.error(error));
+      $(".errorMessage").remove();
+    }
   };
   handleSubmit = (e) => {
     e.preventDefault();
