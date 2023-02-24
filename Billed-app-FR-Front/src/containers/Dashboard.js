@@ -82,6 +82,8 @@ export default class {
   };
 
   handleEditTicket(e, bill, bills) {
+    console.log("handleeditticket", this.counter);
+    console.log("handleeditticket-index", this.index);
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
     if (this.counter % 2 === 0) {
@@ -92,14 +94,15 @@ export default class {
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
       this.counter++;
+      console.log("ici", this.counter);
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
-
       $(".dashboard-right-container div").html(`
-        <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
+      <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `);
       $(".vertical-navbar").css({ height: "120vh" });
       this.counter++;
+      console.log("la", this.counter);
     }
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
@@ -127,6 +130,8 @@ export default class {
   };
 
   handleShowTickets(e, bills, index) {
+    // console.log("handleShowTicket", this.counter);
+    // console.log("handleShowTicket-id", this.index);
     if (this.counter === undefined || this.index !== index) this.counter = 0;
     if (this.index === undefined || this.index !== index) this.index = index;
     if (this.counter % 2 === 0) {
@@ -140,6 +145,7 @@ export default class {
     }
 
     bills.forEach((bill) => {
+      // console.log(bill);
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
     });
 

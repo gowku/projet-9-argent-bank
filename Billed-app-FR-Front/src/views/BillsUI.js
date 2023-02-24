@@ -50,6 +50,7 @@ const sortedByDate = (data) => {
 };
 
 const rows = (data) => {
+  console.log(data);
   return data && data.length
     ? sortedByDate(data)
         .map((bill) => row(bill))
