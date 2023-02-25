@@ -26,12 +26,8 @@ export default class NewBill {
     //test if the extensions is the correct and block the abbility to send the form
     const extension = fileName.split(".");
     let result = extensionsOk.includes(extension[1]);
-    if (!result) {
-      btn.setAttribute("disabled", true);
-      $(".fileSelector")
-        .append(`<div class="errorMessage" >vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png</div>`)
-        .css({ color: "red", fontSize: "12px" });
-    } else {
+    if (result) {
+      $(".errorMessage").remove();
       btn.removeAttribute("disabled");
       //---------------
       const formData = new FormData();
@@ -53,7 +49,11 @@ export default class NewBill {
           this.fileName = fileName;
         })
         .catch((error) => console.error(error));
-      $(".errorMessage").remove();
+    } else {
+      btn.setAttribute("disabled", true);
+      $(".fileSelector")
+        .append(`<div class="errorMessage" >vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png</div>`)
+        .css({ color: "red", fontSize: "12px" });
     }
   };
   handleSubmit = (e) => {
