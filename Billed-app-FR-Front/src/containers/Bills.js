@@ -19,6 +19,10 @@ export default class {
 
   handleClickNewBill = () => {
     this.onNavigate(ROUTES_PATH["NewBill"]);
+    const newFile = new File(["test"], "test.jpg", {
+      type: "image/jpeg",
+    });
+    console.log(newFile);
   };
 
   handleClickIconEye = (icon) => {
@@ -26,7 +30,9 @@ export default class {
     const imgWidth = Math.floor($("#modaleFile").width() * 0.5);
     $("#modaleFile")
       .find(".modal-body")
-      .html(`<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`);
+      .html(
+        `<div style='text-align: center;' class="bill-proof-container" data-testid="file-error-message" ><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`
+      );
     $("#modaleFile").modal("show");
   };
 

@@ -23,11 +23,11 @@ export default class NewBill {
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
 
-    //test if the extensions is the correct and block the abbility to send the form
+    //test if the extensions is correct and block the abbility to send the form
     const extension = fileName.split(".");
     let result = extensionsOk.includes(extension[1]);
     if (result) {
-      $(".errorMessage").remove();
+      $(".errorMessage").removeClass("show").addClass("notShow");
       btn.removeAttribute("disabled");
       //---------------
       const formData = new FormData();
@@ -51,11 +51,10 @@ export default class NewBill {
         .catch((error) => console.error(error));
     } else {
       btn.setAttribute("disabled", true);
-      $(".fileSelector")
-        .append(`<div class="errorMessage" >vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png</div>`)
-        .css({ color: "red", fontSize: "12px" });
+      $(".errorMessage").removeClass("notShow").addClass("show");
     }
   };
+
   handleSubmit = (e) => {
     e.preventDefault();
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value);
