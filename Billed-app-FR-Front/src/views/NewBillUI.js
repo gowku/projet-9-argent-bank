@@ -55,7 +55,7 @@ export default () => {
                   <div class="col-half fileSelector">
                     <label for="file" class="bold-label">Justificatif</label>
                     <input required type="file" class="form-control blue-border" data-testid="file" />
-                    <div class="errorMessage notShow" data-testid="file-error-message" >vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png</div>
+                    <div class="errorMessage notShow" data-testid="newBill-file-error-message" >vous ne pouvez pas ajouter des fichiers avec une extrension autre que .jpg, .jpeg, .png</div>
                   </div>
                 </div>
             </div>

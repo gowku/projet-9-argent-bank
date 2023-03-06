@@ -16,17 +16,27 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate });
   }
   handleChangeFile = (e) => {
-    const btn = document.querySelector("#btn-send-bill");
-    const extensionsOk = ["jpg", "jpeg", "png"];
     e.preventDefault();
+    const btn = document.querySelector("#btn-send-bill");
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
-    const filePath = e.target.value.split(/\\/g);
-    const fileName = filePath[filePath.length - 1];
 
+    const filePath = e.target.value.split(/\\/g);
+    let fileName = filePath[filePath.length - 1];
+    if (!fileName || fileName === "") fileName = file.name;
+
+    // console.log(file.name);
     //test if the extensions is correct and block the abbility to send the form
-    const extension = fileName.split(".");
-    let result = extensionsOk.includes(extension[1]);
-    if (result) {
+    const isExtensionCorrect = (fileName) => {
+      // console.log("je passe dans la fonction");
+
+      const extensionsOk = ["jpg", "jpeg", "png"];
+      const extension = fileName.split(".");
+      let result = extensionsOk.includes(extension[1]);
+      return result;
+    };
+    // console.log("filename: " + fileName);
+    if (isExtensionCorrect(fileName)) {
+      // console.log("je passe ici");
       $(".errorMessage").removeClass("show").addClass("notShow");
       btn.removeAttribute("disabled");
       //---------------
@@ -50,6 +60,7 @@ export default class NewBill {
         })
         .catch((error) => console.error(error));
     } else {
+      // console.log("je passe la");
       btn.setAttribute("disabled", true);
       $(".errorMessage").removeClass("notShow").addClass("show");
     }
@@ -57,7 +68,7 @@ export default class NewBill {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value);
+    // console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value);
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
       email,
@@ -77,6 +88,7 @@ export default class NewBill {
   };
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.store) {
       this.store
