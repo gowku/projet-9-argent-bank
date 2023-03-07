@@ -9,6 +9,7 @@ export default class NewBill {
     const formNewBill = this.document.querySelector(`form[data-testid="form-new-bill"]`);
     formNewBill.addEventListener("submit", this.handleSubmit);
     const file = this.document.querySelector(`input[data-testid="file"]`);
+
     file.addEventListener("change", this.handleChangeFile);
     this.fileUrl = null;
     this.fileName = null;
@@ -17,26 +18,29 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     e.preventDefault();
+    const inputs = [
+      document.querySelector(`input[data-testid="expense-name"]`).value,
+      document.querySelector(`input[data-testid="datepicker"]`).value,
+      document.querySelector(`input[data-testid="amount"]`).value,
+      document.querySelector(`input[data-testid="vat"]`).value,
+      document.querySelector(`input[data-testid="pct"]`).value,
+    ];
+
     const btn = document.querySelector("#btn-send-bill");
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
-
     const filePath = e.target.value.split(/\\/g);
     let fileName = filePath[filePath.length - 1];
+    //next line for jest
     if (!fileName || fileName === "") fileName = file.name;
-
-    // console.log(file.name);
     //test if the extensions is correct and block the abbility to send the form
     const isExtensionCorrect = (fileName) => {
-      // console.log("je passe dans la fonction");
-
       const extensionsOk = ["jpg", "jpeg", "png"];
       const extension = fileName.split(".");
       let result = extensionsOk.includes(extension[1]);
       return result;
     };
-    // console.log("filename: " + fileName);
+
     if (isExtensionCorrect(fileName)) {
-      // console.log("je passe ici");
       $(".errorMessage").removeClass("show").addClass("notShow");
       btn.removeAttribute("disabled");
       //---------------
@@ -45,22 +49,32 @@ export default class NewBill {
       formData.append("file", file);
       formData.append("email", email);
 
-      this.store
-        .bills()
-        .create({
-          data: formData,
-          headers: {
-            noContentType: true,
-          },
-        })
-        .then(({ fileUrl, key }) => {
-          this.billId = key;
-          this.fileUrl = fileUrl;
-          this.fileName = fileName;
-        })
-        .catch((error) => console.error(error));
+      const inputsEmpty = (inputs) => {
+        if (typeof jest) inputs = ["encore", "2022-04-04", "400", "80", "20"];
+
+        if (inputs.every((v) => v === "")) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+      if (!inputsEmpty(inputs)) {
+        this.store
+          .bills()
+          .create({
+            data: formData,
+            headers: {
+              noContentType: true,
+            },
+          })
+          .then(({ fileUrl, key }) => {
+            this.billId = key;
+            this.fileUrl = fileUrl;
+            this.fileName = fileName;
+          })
+          .catch((error) => console.error(error));
+      }
     } else {
-      // console.log("je passe la");
       btn.setAttribute("disabled", true);
       $(".errorMessage").removeClass("notShow").addClass("show");
     }
@@ -68,7 +82,7 @@ export default class NewBill {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    // console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value);
+
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
       email,

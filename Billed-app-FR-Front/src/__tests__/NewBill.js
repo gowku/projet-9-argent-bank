@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import "@testing-library/jest-dom";
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
@@ -62,6 +62,29 @@ describe("Given I am connected as an employee", () => {
         expect(fileValue.files[0]).toStrictEqual(newFile);
         expect(errorMessage).toHaveClass("notShow");
       });
+
+      it("Should have a bad format", async () => {
+        const newBill = new NewBill({
+          document,
+          onNavigate,
+          store: mockStore,
+          localStorage: window.localStorage,
+        });
+        const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
+        const newFile = new File(["test"], "test.pdf", {
+          type: "application/pdf",
+        });
+
+        const fileValue = screen.getByTestId("file");
+        fileValue.addEventListener("change", handleChangeFile);
+        userEvent.upload(fileValue, newFile);
+
+        expect(handleChangeFile).toHaveBeenCalled();
+        const errorMessage = screen.getByTestId("newBill-file-error-message");
+        console.log(errorMessage);
+        expect(fileValue.files[0]).toStrictEqual(newFile);
+        expect(errorMessage).toHaveClass("show");
+      });
     });
   });
 });
@@ -84,50 +107,51 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = ROUTES({ pathname });
       };
     });
+    describe("if inputs are good", () => {
+      it("Should be succesfully submitted", async () => {
+        const html = NewBillUI();
+        document.body.innerHTML = html;
 
-    it("Should be succesfully submitted", async () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
+        const newBill = new NewBill({
+          document,
+          onNavigate,
+          store: null,
+          localStorage: window.localStorage,
+        });
 
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store: null,
-        localStorage: window.localStorage,
+        const mockedBill = {
+          type: "Hôtel et logement",
+          name: "encore",
+          date: "2022-04-04",
+          amount: 400,
+          vat: 80,
+          pct: 20,
+          commentary: "séminaire billed",
+          fileUrl: "../test.jpg",
+          fileName: "test.jpg",
+          status: "pending",
+        };
+
+        screen.getByTestId("expense-type").value = mockedBill.type;
+        screen.getByTestId("expense-name").value = mockedBill.name;
+        screen.getByTestId("datepicker").value = mockedBill.date;
+        screen.getByTestId("amount").value = mockedBill.amount;
+        screen.getByTestId("vat").value = mockedBill.vat;
+        screen.getByTestId("pct").value = mockedBill.pct;
+        screen.getByTestId("commentary").value = mockedBill.commentary;
+        newBill.fileUrl = mockedBill.fileUrl;
+        newBill.fileName = mockedBill.fileName;
+
+        newBill.updateBill = jest.fn();
+        const mockedHandleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+
+        const form = screen.getByTestId("form-new-bill");
+        form.addEventListener("submit", mockedHandleSubmit);
+        fireEvent.submit(form);
+
+        expect(mockedHandleSubmit).toHaveBeenCalled();
+        expect(newBill.updateBill).toHaveBeenCalled();
       });
-
-      const mockedBill = {
-        type: "Hôtel et logement",
-        name: "encore",
-        date: "2022-04-04",
-        amount: 400,
-        vat: 80,
-        pct: 20,
-        commentary: "séminaire billed",
-        fileUrl: "../test.jpg",
-        fileName: "test.jpg",
-        status: "pending",
-      };
-
-      screen.getByTestId("expense-type").value = mockedBill.type;
-      screen.getByTestId("expense-name").value = mockedBill.name;
-      screen.getByTestId("datepicker").value = mockedBill.date;
-      screen.getByTestId("amount").value = mockedBill.amount;
-      screen.getByTestId("vat").value = mockedBill.vat;
-      screen.getByTestId("pct").value = mockedBill.pct;
-      screen.getByTestId("commentary").value = mockedBill.commentary;
-      newBill.fileUrl = mockedBill.fileUrl;
-      newBill.fileName = mockedBill.fileName;
-
-      newBill.updateBill = jest.fn();
-      const mockedHandleSubmit = jest.fn((e) => newBill.handleSubmit(e));
-
-      const form = screen.getByTestId("form-new-bill");
-      form.addEventListener("submit", mockedHandleSubmit);
-      fireEvent.submit(form);
-
-      expect(mockedHandleSubmit).toHaveBeenCalled();
-      expect(newBill.updateBill).toHaveBeenCalled();
     });
 
     it("Should returnan error 500", async () => {
